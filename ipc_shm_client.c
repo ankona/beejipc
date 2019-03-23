@@ -24,6 +24,6 @@ int main()
 
     printf("shared memory content: %s\n", (char*)shmptr);
 
-    message * m = shmptr+sizeof(shmptr)+1;
-    printf("m.x: %d, m.y: %d, m.z: %li\n", m->x, m->y, m->z);
+    message * m = shmptr+strlen(shmptr)+1;
+    printf("m.x: %d, m.y: %c, m.z: %li\n", m->x, m->y, m->z);
 }

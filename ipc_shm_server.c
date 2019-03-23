@@ -31,10 +31,10 @@ int main()
 
     message m;
     m.x = 11;
-    m.y = 'z';
+    m.y = 'Y';
     m.z = 111222333444555;
 
-    memcpy(shmptr+sizeof(msg)+1, &m, sizeof(m));
+    memcpy(shmptr+strlen(msg)+1, &m, sizeof(m));
 
     return 0;
 
