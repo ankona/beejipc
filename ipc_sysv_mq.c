@@ -15,9 +15,19 @@ typedef struct qmsg {
     char name[100];
 } qmsg;
 
+typedef struct req {
+    int shmid;
+    char path[1024];
+} request;
+
+typedef struct qmsg2 {
+    long mtype;
+    request request;
+} qmsg2;
+
 int main() {
 
-    key_t qkey = ftok("/tmp", 43);
+    key_t qkey = ftok("/tmp", 'C');
     if (qkey == -1)
     {
         printf("errno: %i\n", errno);
@@ -33,25 +43,33 @@ int main() {
     printf("msg_qid: %i\n", msg_qid);
     printf("qkey: %i\n", qkey);
 
-    qmsg msg;
-    msg.mtype = 1;
-    strcpy(msg.name, "Chris");
+    /* qmsg outmsg;
+    outmsg.mtype = 1;
+    strcpy(outmsg.name, "Chris"); */
 
-    int sendout = msgsnd(msg_qid, (void*)&msg, sizeof(msg.name), 0);
+
+    qmsg2 outmsg;
+    outmsg.mtype = 1;
+
+    request req;
+    strcpy(req.path, "/tmp/test");
+    req.shmid = 1;
+    outmsg.request = req;
+
+    int sendout = msgsnd(msg_qid, (void*)&outmsg, sizeof(qmsg2), 0);
 
     printf("sendout is: %d\n", sendout);
 
 
-    qmsg recvmsg;
-    int recvout = msgrcv(msg_qid, &recvmsg, sizeof(msg.name), 1, 0);
+    /* qmsg recvmsg;
+    int recvout = msgrcv(msg_qid, &recvmsg, sizeof(msg.name), 1, 0);*/
 
-    printf("recvout: %s\n", recvmsg.name);
+//    qmsg2 recvmsg;
+//    int recvout = msgrcv(msg_qid, &recvmsg, sizeof(qmsg2), 1, 0);
+//    printf("recvout: %s\n", recvmsg.request.path);
 
-//    msgctl(65536, IPC_RMID, NULL);
-//    msgctl(65537, IPC_RMID, NULL);
-//    msgctl(65538, IPC_RMID, NULL);
-//    msgctl(65539, IPC_RMID, NULL);
-        msgctl(msg_qid, IPC_RMID, NULL);
+
+    // msgctl(msg_qid, IPC_RMID, NULL);
     return 0;
 
 }
